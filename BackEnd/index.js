@@ -14,6 +14,14 @@ const cors = require("cors");
 // Hỗ trợ gửi mail
 const nodemailer = require("nodemailer");
 
+app.use(cors(
+  {
+    origin: ["https://deploy-mern-1whq.vercel.app"],
+    methods: ["POST", "GET"],
+    credentials: true
+  }
+));
+
 // Xử lý dữ liệu gửi đến từ yêu cầu HTTP
 app.use(express.json());
 // Hỗ trợ truy cập từ các nguồn khác nhau (Cross-Origin Resource Sharing)
