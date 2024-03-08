@@ -5,6 +5,7 @@ import add_icon from "../../assets/Product_Cart.svg";
 import list_product from "../../assets/Product_list_icon.svg";
 import customer from "../../assets/cliente.svg";
 import promotion from "../../assets/promotion.svg";
+import promote_icon from "../../assets/promote_icon.png";
 
 const Sidebar = () => {
   return (
@@ -13,6 +14,12 @@ const Sidebar = () => {
         <div className="sidebar-items">
           <img src={add_icon} alt="" />
           <p>Thêm sản phẩm</p>
+        </div>
+      </Link>
+      <Link to={"/addpromote"} style={{ textDecoration: "none" }}>
+        <div className="sidebar-items">
+          <img src={promote_icon} alt="" />
+          <p style={{ fontSize: "15px" }}>Thêm khuyến mãi</p>
         </div>
       </Link>
       <Link to={"/listproduct"} style={{ textDecoration: "none" }}>

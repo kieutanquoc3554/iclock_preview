@@ -738,7 +738,7 @@ app.get("/allpromotions", async (req, res) => {
 
 app.post("/addpromotion", async (req, res) => {
   try {
-    const { name, endDate, discount } = req.body;
+    const { name, startDate, endDate, discount } = req.body;
     const promotions = await Promotion.find({});
     let id;
     if (promotions.length > 0) {
@@ -751,6 +751,7 @@ app.post("/addpromotion", async (req, res) => {
     const newPromotion = new Promotion({
       id: id,
       name: name,
+      startDate: startDate,
       endDate: endDate,
       discount: discount,
     });
@@ -761,6 +762,12 @@ app.post("/addpromotion", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+app.post("/removepromote", async (req, res) => {
+  await Promotion.findOneAndDelete({ id: req.body.id });
+  console.log("Đã xoá mã khuyến mãi");
+  res.json({ success: true, name: req.body.name });
 });
 
 const Brand = mongoose.model("Brand", {
