@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Promotion.css";
 import { useEffect } from "react";
 import remove_icon from "../../assets/cross_icon.png";
+import moment from "moment";
 
 const Promotion = () => {
   const [allpromotes, setAllPromotes] = useState([]);
@@ -45,11 +46,13 @@ const Promotion = () => {
           return (
             <>
               <div key={i} className="promote-main promote-format">
-                <p>{promote.id}</p>
+                <p>{promote._id}</p>
                 <p>{promote.name}</p>
-                <p>{promote.startDate}</p>
-                <p>{promote.endDate}</p>
-                <p>{promote.discount}</p>
+                <p>
+                  {moment.utc(promote.startDate).format("HH:mm DD/MM/YYYY")}
+                </p>
+                <p>{moment.utc(promote.endDate).format("HH:mm DD/MM/YYYY")}</p>
+                <p>{promote.discount}%</p>
                 <img
                   onClick={() => removePromote(promote.id)}
                   src={remove_icon}

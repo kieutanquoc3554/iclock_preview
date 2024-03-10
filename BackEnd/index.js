@@ -14,14 +14,6 @@ const cors = require("cors");
 // Hỗ trợ gửi mail
 const nodemailer = require("nodemailer");
 
-app.use(cors(
-  {
-    origin: ["https://deploy-mern-1whq.vercel.app"],
-    methods: ["POST", "GET"],
-    credentials: true
-  }
-));
-
 // Xử lý dữ liệu gửi đến từ yêu cầu HTTP
 app.use(express.json());
 // Hỗ trợ truy cập từ các nguồn khác nhau (Cross-Origin Resource Sharing)
@@ -725,7 +717,7 @@ const Promotion = mongoose.model("Promotion", {
   },
   endDate: {
     type: Date,
-    required: true,
+    default: Date.now,
   },
   discount: {
     type: String,
@@ -773,9 +765,36 @@ app.post("/addpromotion", async (req, res) => {
 });
 
 app.post("/removepromote", async (req, res) => {
-  await Promotion.findOneAndDelete({ id: req.body.id });
+  await Promotion.findOneAndDelete({ _id: req.body.promoCode });
   console.log("Đã xoá mã khuyến mãi");
-  res.json({ success: true, name: req.body.name });
+  res.json({ success: true, _id: req.body.promoCode });
+});
+
+app.post("/checkpromocode", async (req, res) => {
+  const { promoCode } = req.body;
+  try {
+    const promoCodeObjectId = new mongoose.Types.ObjectId(promoCode);
+    const validPromoCode = await Promotion.findOne({ _id: promoCodeObjectId });
+    if (validPromoCode) {
+      res.status(200).json({
+        success: true,
+        message: "Mã giảm giá hợp lệ",
+        discount: validPromoCode.discount,
+        startDate: validPromoCode.startDate,
+        endDate: validPromoCode.endDate,
+        currentDate: new Date(),
+      });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "Mã giảm giá không hợp lệ" });
+    }
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Mã giảm giá không hợp lệ" });
+  }
 });
 
 const Brand = mongoose.model("Brand", {

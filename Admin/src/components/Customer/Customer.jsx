@@ -18,7 +18,6 @@ const Customer = () => {
       .then((res) => res.json())
       .then((data) => {
         setAllUser(data);
-        console.log(data);
         const roles = {};
         data.forEach((user) => {
           roles[user._id] = user.role;

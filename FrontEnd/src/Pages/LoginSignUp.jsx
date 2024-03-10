@@ -41,7 +41,7 @@ const LoginSignUp = () => {
       localStorage.setItem("auth-token", responseData.token);
       if (responseData.role === "Quản trị viên") {
         const confirmation = window.confirm(
-          "Bạn được xác định là quản trị viên. Bạn muốn mua sắm hay truy cập vào trang quản lý?"
+          "Bạn được xác định là quản trị viên. Mặc định bạn sẽ ở trang mua sắm. Bạn có muốn điều hướng đến trang quản trị không?"
         );
         if (confirmation) {
           window.open("http://localhost:5173", "_blank");

@@ -1,13 +1,41 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./AddPromote.css";
 
 const AddPromote = () => {
   const [promote, setPromote] = useState({
+    id: "",
     name: "",
-    startDate: "",
-    endDate: "",
+    startDate: new Date(),
+    endDate: new Date(),
     discount: "",
   });
+
+  const changeHandler = (e) => {
+    setPromote({ ...promote, [e.target.name]: e.target.value });
+  };
+
+  const addPromotion = async () => {
+    try {
+      const promotionsCopy = { ...promote };
+
+      await fetch("http://localhost:4000/addpromotion", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(promotionsCopy),
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+          data.success
+            ? alert("Mã khuyến mãi chưa được thêm")
+            : alert("Đã thêm mã khuyến mãi");
+        });
+    } catch (error) {
+      console.error("Lỗi khi thêm khuyến mãi:", error);
+    }
+  };
 
   return (
     <div className="add-promote">
@@ -15,7 +43,7 @@ const AddPromote = () => {
         <p>Nội dung khuyến mãi</p>
         <input
           value={promote.name}
-          onChange=""
+          onChange={changeHandler}
           type="text"
           name="name"
           placeholder="Nhập vào đây"
@@ -26,9 +54,9 @@ const AddPromote = () => {
           <p>Ngày bắt đầu</p>
           <input
             value={promote.startDate}
-            onChange=""
+            onChange={changeHandler}
             type="date"
-            name="startdate"
+            name="startDate"
             placeholder="Nhập vào đây"
           />
         </div>
@@ -36,24 +64,29 @@ const AddPromote = () => {
           <p>Ngày kết thúc</p>
           <input
             value={promote.endDate}
-            onChange=""
+            onChange={changeHandler}
             type="date"
-            name="enddate"
+            name="endDate"
             placeholder="Nhập vào đây"
           />
         </div>
       </div>
       <div className="addproduct-item-input">
-        <p>Giá trị giảm giá</p>
+        <p>Giá trị giảm giá (đơn vị %)</p>
         <input
           value={promote.discount}
-          onChange=""
-          type="number"
+          onChange={changeHandler}
+          type="text"
           name="discount"
           placeholder="Nhập vào đây"
         />
       </div>
-      <button onClick="" className="addproduct-button">
+      <button
+        onClick={() => {
+          addPromotion();
+        }}
+        className="addpromote-button"
+      >
         Thêm khuyến mãi
       </button>
     </div>

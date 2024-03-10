@@ -50,12 +50,12 @@ const ShowProduct = (props) => {
         >
           Thêm vào giỏ hàng
         </button>
-        <p className="showProduct-right-category">
+        {/* <p className="showProduct-right-category">
           <span>Danh mục: </span>Women, T-Shirt, Crop Top
         </p>
         <p className="showProduct-right-category">
           <span>Tag: </span>Modern, Latest
-        </p>
+        </p> */}
       </div>
     </div>
   );

@@ -7,12 +7,14 @@ import ListProduct from "../../components/ListProduct/ListProduct";
 import Customer from "../../components/Customer/Customer";
 import Promotion from "../../components/Promotion/Promotion";
 import AddPromote from "../../components/AddPromote/AddPromote";
+import Introduction from "../../components/Introduction/Introduction";
 
 const Admin = () => {
   return (
     <div className="admin">
       <Sidebar></Sidebar>
       <Routes>
+        <Route path="/" element={<Introduction />}></Route>
         <Route path="/addproduct" element={<AddProduct />}></Route>
         <Route path="/addpromote" element={<AddPromote />}></Route>
         <Route path="/listproduct" element={<ListProduct />}></Route>

@@ -1,6 +1,8 @@
 import React, { createContext, useState } from "react";
 import CartItem from "../Component/CartItems/CartItem";
 import { useEffect } from "react";
+import moment from "moment";
+import "moment-timezone";
 
 export const ShopContext = createContext(null);
 
@@ -17,6 +19,8 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState(getDefaultCart());
   const [sortByPriceDescending, setSortByPriceDescending] = useState(false);
   const [sortByPriceClicked, setSortByPriceClicked] = useState(false);
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [discount, setDiscount] = useState(0);
 
   useEffect(() => {
     fetch("http://localhost:4000/allproduct")
@@ -103,7 +107,50 @@ const ShopContextProvider = (props) => {
         });
     }
   };
-
+  const applyPromo = async (promoCode) => {
+    fetch("http://localhost:4000/checkpromocode", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ promoCode }),
+    })
+      .then((resp) => resp.json())
+      .then(async (data) => {
+        if (data.success) {
+          if (
+            data.currentDate >= data.startDate &&
+            data.currentDate <= data.endDate
+          ) {
+            setPromoApplied(true);
+            setDiscount(data.discount);
+            alert(
+              `Bạn được giảm: ${data.discount}%. Chúc quý khách trải nghiệm cảm giác mua sắm thật thú vị!`
+            );
+            // await fetch("http://localhost:4000/removepromote", {
+            //   method: "POST",
+            //   headers: {
+            //     Accept: "application/json",
+            //     "Content-Type": "application/json",
+            //   },
+            //   body: JSON.stringify({ promoCode }),
+            // });
+          } else {
+            setPromoApplied(false);
+            alert(
+              `Mã đã hết hạn hoặc đã được sử dụng. Hẹn gặp bạn trong các lần khuyến mãi sau!`
+            );
+            setDiscount(0);
+          }
+        } else {
+          setPromoApplied(false);
+          alert(
+            `Mã đã hết hạn hoặc đã được sử dụng. Hẹn gặp bạn trong các lần khuyến mãi sau!`
+          );
+          setDiscount(0);
+        }
+      });
+  };
   const getTotalCart = () => {
     let totalAmount = 0;
     for (const item in cartItems) {
@@ -133,6 +180,19 @@ const ShopContextProvider = (props) => {
     return totalItem;
   };
 
+  const getTotalCartPromote = () => {
+    let totalCart = parseInt(getTotalCart().replace(/[^\d]/g, ""));
+    let totalCartPromotion = totalCart;
+    if (promoApplied) {
+      let discountAmount = totalCart * (parseInt(discount) / 100);
+      totalCartPromotion = totalCart - discountAmount;
+    }
+    let totalCartPromote = totalCartPromotion
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return totalCartPromote;
+  };
+
   const contextValue = {
     getTotalItem,
     getTotalCart,
@@ -142,6 +202,9 @@ const ShopContextProvider = (props) => {
     removeFromCart,
     all_product: sortedProducts,
     toggleSortByPriceDescending,
+    promoApplied,
+    applyPromo,
+    getTotalCartPromote,
   };
 
   return (
